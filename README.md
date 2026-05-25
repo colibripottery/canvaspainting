@@ -43,9 +43,8 @@ SPA routing is configured in `vercel.json`.
 - `GET /api/web/canvas-classes` — schedule (uses `refresh=true` on load)
 - `GET /api/web/canvas-classes/{id}` — class detail
 - `GET /api/web/locations` — studio info for footer
-- `GET /api/web/classes` + `GET /api/acuity/calendars` — build Acuity deep links for booking
 
-Booking links open `colibripottery.as.me` with appointment type, calendar, and datetime pre-filled. Falls back to [colibripotterystudio.com/booking](https://www.colibripotterystudio.com/booking) when metadata cannot be resolved.
+Each class includes `booking_url` (Acuity deep link built by the backend). The site uses that field for all Book links. If `booking_url` is missing, links fall back to [colibripotterystudio.com/booking](https://www.colibripotterystudio.com/booking).
 
 ## Main site link
 

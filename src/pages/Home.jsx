@@ -3,7 +3,6 @@ import Hero from '../components/Hero';
 import MonthCalendar from '../components/MonthCalendar';
 import ClassCard from '../components/ClassCard';
 import { fetchCanvasClasses } from '../api/canvasClasses';
-import { preloadBookingMeta } from '../utils/bookingUrl';
 import {
   formatClassDate,
   getMonthBounds,
@@ -20,14 +19,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedDateKey, setSelectedDateKey] = useState(toDateKey(today.toISOString()));
-  const [bookingMeta, setBookingMeta] = useState(null);
   const dayPanelRef = useRef(null);
-
-  useEffect(() => {
-    preloadBookingMeta()
-      .then(setBookingMeta)
-      .catch(() => setBookingMeta(null));
-  }, []);
 
   const loadClasses = useCallback(async () => {
     setLoading(true);
@@ -112,11 +104,7 @@ export default function Home() {
             <h3 className="text-xl font-bold mb-4">Coming up soon</h3>
             <div className="grid gap-4">
               {upcomingClasses.map((cls) => (
-                <ClassCard
-                  key={cls.acuity_class_id}
-                  canvasClass={cls}
-                  bookingMeta={bookingMeta}
-                />
+                <ClassCard key={cls.acuity_class_id} canvasClass={cls} />
               ))}
             </div>
           </div>
@@ -180,11 +168,7 @@ export default function Home() {
                 {selectedClasses.length > 0 ? (
                   <div className="grid gap-4">
                     {selectedClasses.map((cls) => (
-                      <ClassCard
-                        key={cls.acuity_class_id}
-                        canvasClass={cls}
-                        bookingMeta={bookingMeta}
-                      />
+                      <ClassCard key={cls.acuity_class_id} canvasClass={cls} />
                     ))}
                   </div>
                 ) : (

@@ -1,20 +1,9 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PaintingGallery from './PaintingGallery';
 import { formatClassTime, formatClassDate } from '../utils/dates';
-import { buildBookingUrl } from '../utils/bookingUrl';
+import { getBookingUrl } from '../utils/bookingUrl';
 
-export default function ClassCard({ canvasClass, bookingMeta }) {
-  const [bookUrl, setBookUrl] = useState(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    buildBookingUrl(canvasClass, bookingMeta).then((url) => {
-      if (!cancelled) setBookUrl(url);
-    });
-    return () => { cancelled = true; };
-  }, [canvasClass, bookingMeta]);
-
+export default function ClassCard({ canvasClass }) {
   const duration = canvasClass.duration_minutes
     ? `${canvasClass.duration_minutes} min`
     : null;
@@ -40,16 +29,14 @@ export default function ClassCard({ canvasClass, bookingMeta }) {
         >
           View details
         </Link>
-        {bookUrl && (
-          <a
-            href={bookUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary text-sm px-4 py-2 text-center"
-          >
-            Book
-          </a>
-        )}
+        <a
+          href={getBookingUrl(canvasClass)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-primary text-sm px-4 py-2 text-center"
+        >
+          Book
+        </a>
       </div>
     </article>
   );

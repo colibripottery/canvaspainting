@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import PaintingGallery from '../components/PaintingGallery';
 import { fetchCanvasClassById } from '../api/canvasClasses';
-import { buildBookingUrl, preloadBookingMeta } from '../utils/bookingUrl';
+import { getBookingUrl } from '../utils/bookingUrl';
 import { formatClassDateTime } from '../utils/dates';
 
 export default function ClassDetail() {
@@ -11,7 +11,6 @@ export default function ClassDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [notFound, setNotFound] = useState(false);
-  const [bookUrl, setBookUrl] = useState(null);
 
   useEffect(() => {
     if (!acuityClassId) return;
@@ -22,10 +21,7 @@ export default function ClassDetail() {
       setError(null);
       setNotFound(false);
       try {
-        const [data, meta] = await Promise.all([
-          fetchCanvasClassById(acuityClassId),
-          preloadBookingMeta().catch(() => null),
-        ]);
+        const data = await fetchCanvasClassById(acuityClassId);
         if (cancelled) return;
         if (!data) {
           setNotFound(true);
@@ -33,8 +29,6 @@ export default function ClassDetail() {
         } else {
           setCanvasClass(data);
           document.title = `${data.class_name} | Colibri Canvas Painting`;
-          const url = await buildBookingUrl(data, meta);
-          if (!cancelled) setBookUrl(url);
         }
       } catch (err) {
         if (!cancelled) setError(err.message || 'Failed to load class');
@@ -128,18 +122,14 @@ export default function ClassDetail() {
           <p className="text-ink-muted mb-6 max-w-md mx-auto">
             Book your seat for this session. You will complete checkout on our secure scheduling page.
           </p>
-          {bookUrl ? (
-            <a
-              href={bookUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary text-lg px-10 py-4"
-            >
-              Book This Class
-            </a>
-          ) : (
-            <span className="text-ink-muted">Preparing booking link…</span>
-          )}
+          <a
+            href={getBookingUrl(canvasClass)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary text-lg px-10 py-4"
+          >
+            Book This Class
+          </a>
         </div>
       </div>
     </div>
